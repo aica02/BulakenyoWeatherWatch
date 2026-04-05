@@ -37,6 +37,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
+    marginTop: 70,
   },
 
   locationText: {
@@ -113,7 +114,8 @@ export const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     gap: 10,
-},
+  },
+
 
   infoCard: {
     backgroundColor: "rgba(255,255,255,0.2)",
@@ -233,8 +235,9 @@ export const styles = StyleSheet.create({
 
   backButton: {
     position: "absolute",
-    top: 15,
-    right: 15,
+    top: 5,
+    right: 5,
+
   },
   
   xIcon: {
