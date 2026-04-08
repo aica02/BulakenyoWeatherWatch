@@ -1,16 +1,14 @@
-
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   chatbotPeek: {
-    position: "absolute",
-    bottom: 20,
     right: -66,
     width: 175,
     height: 175,
     resizeMode: "contain",
+
   },
-  
+
   chatbotStanding: {
     position: "absolute",
     bottom: 5,
@@ -32,8 +30,6 @@ export const styles = StyleSheet.create({
   },
 
   location: {
-    color: "#fff",
-    fontSize: 18,
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
@@ -76,11 +72,6 @@ export const styles = StyleSheet.create({
     color: "#3498da",
   },
 
-  icon: {
-    fontSize: 24,
-    marginVertical: 5,
-  },
-
   tempSmall: {
     fontFamily: "Montserrat_400Regular",
     color: "#3498da",
@@ -108,14 +99,13 @@ export const styles = StyleSheet.create({
     fontFamily: "Montserrat_400Regular",
     color: "#3498da",
   },
-  
+
   bottomContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
     gap: 10,
   },
-
 
   infoCard: {
     backgroundColor: "rgba(255,255,255,0.2)",
@@ -126,13 +116,6 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 5,
     gap: 5,
-
-    // ios shadow - pls check
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 1 },
-    // shadowOpacity: 0.16,
-    // shadowRadius: 4,
-
   },
 
   infoText: {
@@ -147,102 +130,143 @@ export const styles = StyleSheet.create({
     fontSize: 12,
   },
 
-  // Modal Styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   chatContainer: {
-    width: "90%",
-    height: "85%",
-    backgroundColor: "white",
-    borderRadius: 10,
-    overflow: "hidden",
-    elevation: 5,
+    width: '90%',
+    height: '75%',
+    backgroundColor: '#e9eef2',
+    borderRadius: 25,
+    overflow: 'hidden'
   },
 
   chatHeader: {
-    backgroundColor: "#7297b4",
-    padding: 10,
-  },
-  
-  headerText: {
-    color: "white",
-    fontSize: 18,
-    fontFamily: "Montserrat_700Bold",
+    backgroundColor: '#5f7f99',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    flexDirection: 'row',       // Align items horizontally
+    justifyContent: 'space-between', // Push title and X apart
+    alignItems: 'center',       // Center them vertically
   },
 
-  chatScroll: {
+  headerText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: '600'
+  },
+
+  chatBody: {
     flex: 1,
     padding: 15,
+    justifyContent: 'space-around'
   },
 
-  botBubble: {
-    backgroundColor: "#d1e5f4",
-    padding: 15,
-    borderRadius: 10,
-    borderBottomLeftRadius: 2,
-    alignSelf: "flex-start",
-    width: "80%",
-    height: 50,
-    marginBottom: 20,
+  botRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginVertical: 8, 
+    paddingHorizontal: 2,
   },
 
-  userBubble: {
-    backgroundColor: "#7297b4",
-    padding: 15,
-    borderRadius: 10,
-    borderBottomRightRadius: 2,
-    alignSelf: "flex-end",
-    width: "60%",
-    height: 50,
-    marginBottom: 20,
-  },
-
-  bubbleAvatar: {
+  botIcon: {
     width: 40,
     height: 40,
-    marginTop: 5,
-  },
-  
-  inputArea: {
-    width: "65%",
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#eee",
+    marginRight: 8
   },
 
-  sendIcon: {
-    fontSize: 24,
-    color: "#7297b4",
+  botBubbleLarge: {
+    flex: 1,
+    height: 80,
+    backgroundColor: '#a9c0d4',
+    borderRadius: 20,
+  },
+
+  centerButton: {
+    alignSelf: 'center',
+    width: '60%',
+    height: 45,
+    backgroundColor: '#5f7f99',
+    borderRadius: 15
+  },
+
+  inputArea: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    position: 'relative', 
   },
 
   textInput: {
     flex: 1,
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginRight: 10,
-    fontFamily: "Montserrat_400Regular",
+    height: 45,
+    backgroundColor: '#f0f4f7',
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    paddingRight: 50, // This creates space so text doesn't go under the button
+    color: '#333',
   },
 
-  backButton: {
-    position: "absolute",
-    top: 5,
-    right: 5,
-
+  floatingBot: {
+    width: 70, 
+    height: 70, 
+    position: 'absolute', 
+    right: -5, 
+    bottom: 10,
+    zIndex: 10 
   },
-  
-  xIcon: {
-    fontSize: 30,
-    color: "white",
+
+  sendButton: {
+    position: 'absolute',
+    right: 25, // Adjusted to sit inside the input bar
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  userRow: {
+    flexDirection: "row-reverse",
+    alignItems: 'flex-end',
+    marginVertical: 8, 
+    paddingHorizontal: 10,
+  },
+
+  userBubble: {
+    backgroundColor: "#5f7f99",
+    padding: 12,
+    borderRadius: 18,
+    borderTopRightRadius: 2, // Gives it a "speech bubble" look
+    maxWidth: "80%",
+  },
+  botBubble: {
+    backgroundColor: "white",
+    padding: 12,
+    borderRadius: 18,
+    borderTopLeftRadius: 2,
+    maxWidth: "80%",
+    elevation: 1, // Slight shadow for bot messages
+  },
+  // Add or update these specific styles:
+  inputAreaContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 60, // Create space for the robot icon on the right
+    position: 'relative',
+  },
+  floatingBotInChat: {
+    width: 80, 
+    height: 80,
+    position: 'absolute',
+    right: -10, // Moves it slightly outside the chat container
+    bottom: -10, // Aligns it with the bottom of the input area
   },
 
 });

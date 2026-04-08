@@ -6,6 +6,9 @@ import {
 import * as Location from 'expo-location';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { styles } from "../styles/WeatherScreen";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import * as Clipboard from 'expo-clipboard';
+import { Alert } from 'react-native';
 
 const WeatherIcons: any = {
   cloudy: require("../assets/Cloudy.png"),
@@ -23,7 +26,7 @@ const WeatherIcons: any = {
   windy: require("../assets/Windy.png"),
 };
 
-const API_KEY = "nasa_messenger_hehe"; 
+const API_KEY = "06fe568d6607489ea2f71845260504"; 
 
 interface HourlyData {
   time: string;
@@ -49,12 +52,38 @@ interface WeatherData {
   daily: DailyData[];
 }
 
+const genAI = new GoogleGenerativeAI("AIzaSyBw29VaJxCN7EkKdtFRh96zu5jGXDaAtxM");
+const model = genAI.getGenerativeModel(
+  { model: "gemini-2.5-flash" },
+  { apiVersion: "v1" }
+);
+
 const WeatherScreen = () => {
   const [isChatVisible, setIsChatVisible] = useState(false);
   const [locationName, setLocationName] = useState("Detecting...");
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [chatInput, setChatInput] = useState("");
+  const [hasError, setHasError] = useState(false);
+  const [chatHistory, setChatHistory] = useState<{role: string, parts: {text: string}[]}[]>([
+    {
+      role: "user",
+      parts: [{ text: `You are "BulaWatch AI," a specialized weather assistant for Bulacan, Philippines.
+        - Use Taglish naturally.
+        - Mention landmarks like Barasoain Church or Philippine Arena when relevant.
+        - If location is Hagonoy or Calumpit and rainChance > 40%, warn about local flooding.
+        - Always emphasize the Heat Index (Feels Like) for safety.
+        - If temp > 33°C, recommend hydration.
+        - Keep responses short and mobile-friendly. 
+        Confirm if you are ready.` }]
+    },
+    {
+      role: "model",
+      parts: [{ text: "Hello! Ako si BulaWatch AI, ang iyong weather assistant dito sa Bulacan. Kumusta ang panahon sa inyong lugar?" }]
+    }
+  ]);
+  const [isSending, setIsSending] = useState(false);
 
   const getCustomIcon = (text: string, isDay: boolean) => {
     const condition = text.toLowerCase();
@@ -171,6 +200,92 @@ const fetchWeather = async (lat: number, lon: number) => {
     );
   }
 
+  const copyToClipboard = async (text: string) => {
+    await Clipboard.setStringAsync(text);
+    // Optional: Show a small toast or alert so the user knows it worked
+    Alert.alert("Copied", "Message copied to clipboard!");
+  };
+
+  const handleSendMessage = async () => {
+    if (!chatInput.trim() || isSending) return;
+
+    setHasError(false);
+    const userMessage = chatInput;
+    setChatInput("");
+    setIsSending(true);
+
+    const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const weatherContext = `
+      Current Time: ${currentTime}
+      Location: ${locationName}
+      Temp: ${weatherData?.temp}°C
+      Feels Like: ${weatherData?.feelsLike}
+      Condition: ${weatherData?.condition}
+      Rain Chance: ${weatherData?.rainChance}
+    `;
+    const updatedHistory = [...chatHistory, { role: "user", parts: [{ text: userMessage }] }];
+    setChatHistory(updatedHistory);
+
+    try {
+    
+      const prompt = `
+        STRICT RULE: Use ONLY the provided weather data below. 
+        Do not calculate your own Heat Index. and do not make up any weather details that are not given.
+        If the user asks for current weather, use the provided data. 
+        If the user asks for advice (e.g. "Should I bring an umbrella?"), base it solely on the provided data.
+        Always keep responses concise and relevant to Bulacan's weather.
+        Do not use Markdown formatting like asterisks (**) or hashtags (#). 
+        Write in plain text only.
+         
+        Current context:
+        
+        ${weatherContext}
+        
+        User says: ${userMessage}
+      `;
+      
+      const historyWithContext = updatedHistory.map((msg, index) => {
+        if (index === updatedHistory.length - 1) {
+          return {
+            role: "user",
+            parts: [{ 
+              text: `
+                STRICT RULES: No markdown (**), no hashtags. Use ONLY this data:
+                ${weatherContext}
+                
+                User Message: ${userMessage}
+              ` 
+            }]
+          };
+        }
+        return msg;
+      });
+      
+      // We pass the whole history so it remembers the persona
+      const result = await model.generateContent({
+        contents: historyWithContext
+      });
+
+      const response = await result.response;
+      const text = response.text();
+      
+      setChatHistory(prev => [...prev, { role: "model", parts: [{ text }] }]);
+    } catch (error) {
+      //error message na red
+      console.error("BulaWatch Error:", error);
+      // Log the full error to your terminal to see if it's an API Key issue
+      const friendlyError = "Pasensya na po, medyo busy ang servers ko ngayon. 🤖 Subukan niyo po ulit mamaya nang konti!";
+    
+      setChatHistory(prev => [...prev, { 
+        role: "model", 
+        parts: [{ text: friendlyError }] 
+      }]);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   return (
     <ImageBackground source={backgroundImage} style={styles.container} blurRadius={10}>
       <ScrollView contentContainerStyle={{ paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
@@ -205,7 +320,7 @@ const fetchWeather = async (lat: number, lon: number) => {
           ))}
         </ScrollView>
 
-        {/* 7-Day Forecast with Header */}
+        {/* 7-Day Forecast */}
         <View style={styles.dailyContainer}>
           <View style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.1)', paddingBottom: 10, marginBottom: 10 }}>
             <Text style={[styles.dayText, { fontSize: 18 }]}>7-Day Forecast</Text>
@@ -222,45 +337,112 @@ const fetchWeather = async (lat: number, lon: number) => {
 
         {/* Bottom Details */}
         <View style={styles.bottomContainer}>
-          <InfoCard customIcon={WeatherIcons.humidity} value={weatherData?.humidity || "0%"}label="Humidity" />
+          <InfoCard customIcon={WeatherIcons.humidity} value={weatherData?.humidity || "0%"} label="Humidity" />
           <InfoCard customIcon={WeatherIcons.rainRate} value={weatherData?.rainChance || "0%"} label="Rain Chance" />
           <InfoCard customIcon={WeatherIcons.thermometer} value={weatherData?.feelsLike || "0°"} label="Feels Like" />
         </View>
       </ScrollView>
 
-      {/* Chatbot Entry */}
+      {/* CHATBOT ENTRY ICON */}
       {!isChatVisible && (
-        <TouchableOpacity activeOpacity={0.8} onPress={() => setIsChatVisible(true)} style={{position: 'absolute', bottom: 30, right: 20}}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => setIsChatVisible(true)}
+          style={{
+            position: 'absolute',
+            bottom: 30,
+            right: 10,
+            zIndex: 100,
+            elevation: 100
+          }}
+        >
           <Image source={require("../assets/chatbot-cloud-peek.png")} style={styles.chatbotPeek} />
         </TouchableOpacity>
       )}
 
-      {/* Nimbus AI Modal */}
-      <Modal animationType="slide" transparent={true} visible={isChatVisible}>
+      {/* THE MODAL */}
+      <Modal animationType="slide" transparent visible={isChatVisible}>
         <View style={styles.modalOverlay}>
           <View style={styles.chatContainer}>
+
+            {/* HEADER */}
             <View style={styles.chatHeader}>
               <Text style={styles.headerText}>Nimbus AI</Text>
+              <TouchableOpacity 
+                onPress={() => setIsChatVisible(false)}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <MaterialCommunityIcons name="close" size={28} color="white" />
+              </TouchableOpacity>
             </View>
-            <ScrollView style={styles.chatScroll} contentContainerStyle={{ padding: 15 }}>
-               <View style={styles.botBubble}>
-                 <Text style={{ color: 'white' }}>
-                   Kumusta, Kabayan! It's {weatherData?.temp}°C in {locationName}. Stay safe!
-                 </Text>
-               </View>
-            </ScrollView>
-            <View style={styles.inputArea}>
-              <TextInput style={styles.textInput} placeholder="Ask Nimbus" placeholderTextColor="#999" />
-              <TouchableOpacity><MaterialCommunityIcons name="send" size={24} color="#3498da" /></TouchableOpacity>
+
+            {/* CHAT BODY */}
+            <View style={styles.chatBody}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {/* .slice(1) skips the internal instructions message */}
+                {chatHistory.slice(1).map((msg, index) => {
+                  // Keep this at [0] to avoid the crash
+                  const rawText = msg.parts?.[0]?.text || "";
+                  
+                  const cleanText = rawText
+                    .replace(/STRICT:.*User:/s, "")
+                    .replace(/\*\*/g, "");
+
+                  return (
+                    <TouchableOpacity 
+                      key={index} 
+                      onLongPress={() => copyToClipboard(cleanText)}
+                      delayLongPress={500}
+                      style={msg.role === "user" ? [styles.userRow, { marginVertical: 8 }] : [styles.botRow, { marginVertical: 8 }]}
+                    >
+                      {msg.role !== "user" && <Image source={require("../assets/chatbot-cloud.png")} style={styles.botIcon} />}
+                      <View style={msg.role === "user" ? styles.userBubble : styles.botBubble}>
+                        <Text style={{ color: msg.role === "user" ? "white" : "#333" }}>{cleanText}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+
+                {hasError && (
+                  <TouchableOpacity onPress={handleSendMessage} style={{ alignSelf: 'center', marginVertical: 10 }}>
+                    <Text style={{ color: '#ff6b6b', fontSize: 12, fontWeight: 'bold' }}>⚠️ Connection busy. Tap to retry.</Text>
+                  </TouchableOpacity>
+                )}
+                
+                {isSending && <ActivityIndicator color="#5f7f99" style={{ marginTop: 10 }} />}
+              </ScrollView>
             </View>
-            <TouchableOpacity style={styles.backButton} onPress={() => setIsChatVisible(false)}>
-            <MaterialCommunityIcons name="close-circle" size={30} color="white" />
-          </TouchableOpacity>
+
+            {/* FIXED INPUT AREA */}
+              <View style={styles.inputAreaContainer}> 
+                <View style={styles.inputArea}>
+                  <TextInput 
+                    style={styles.textInput}
+                    value={chatInput}
+                    onChangeText={setChatInput}
+                    placeholder="Text Input Here..."
+                    placeholderTextColor="#6b8ba4"
+                  />
+                  <TouchableOpacity 
+                    onPress={handleSendMessage} 
+                    style={styles.sendButton}
+                    disabled={isSending}
+                  >
+                    <MaterialCommunityIcons 
+                      name={isSending ? "dots-horizontal" : "send"} 
+                      size={24} 
+                      color="#5f7f99" 
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                {/* MOVE THE ICON HERE */}
+                <Image 
+                  source={require("../assets/chatbot-cloud.png")} 
+                  style={styles.floatingBotInChat}
+                />
+              </View>
           </View>
-          
-          <TouchableOpacity style={styles.chatbotStanding} onPress={() => setIsChatVisible(false)}>
-            <Image source={require("../assets/chatbot-cloud.png")} style={styles.chatbotStanding} />
-          </TouchableOpacity>
         </View>
       </Modal>
     </ImageBackground>
