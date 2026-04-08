@@ -26,7 +26,7 @@ const WeatherIcons: any = {
   windy: require("../assets/Windy.png"),
 };
 
-const API_KEY = "06fe568d6607489ea2f71845260504"; 
+const API_KEY = "messenger"; 
 
 interface HourlyData {
   time: string;
@@ -52,7 +52,7 @@ interface WeatherData {
   daily: DailyData[];
 }
 
-const genAI = new GoogleGenerativeAI("AIzaSyBw29VaJxCN7EkKdtFRh96zu5jGXDaAtxM");
+const genAI = new GoogleGenerativeAI("sample");
 const model = genAI.getGenerativeModel(
   { model: "gemini-2.5-flash" },
   { apiVersion: "v1" }
