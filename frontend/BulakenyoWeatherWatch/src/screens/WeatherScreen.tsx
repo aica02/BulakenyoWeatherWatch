@@ -26,7 +26,7 @@ const WeatherIcons: any = {
   windy: require("../assets/Windy.png"),
 };
 
-const API_KEY = "messenger"; 
+const API_KEY = "sa messenger"; 
 
 interface HourlyData {
   time: string;
@@ -52,7 +52,7 @@ interface WeatherData {
   daily: DailyData[];
 }
 
-const genAI = new GoogleGenerativeAI("sample");
+const genAI = new GoogleGenerativeAI("sa messenger");
 const model = genAI.getGenerativeModel(
   { model: "gemini-2.5-flash" },
   { apiVersion: "v1" }
@@ -367,7 +367,7 @@ const fetchWeather = async (lat: number, lon: number) => {
 
             {/* HEADER */}
             <View style={styles.chatHeader}>
-              <Text style={styles.headerText}>Nimbus AI</Text>
+              <Text style={styles.headerText}>BulaWatch AI</Text>
               <TouchableOpacity 
                 onPress={() => setIsChatVisible(false)}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -416,33 +416,33 @@ const fetchWeather = async (lat: number, lon: number) => {
             {/* FIXED INPUT AREA */}
               <View style={styles.inputAreaContainer}> 
                 <View style={styles.inputArea}>
-                  <TextInput 
-                    style={styles.textInput}
-                    value={chatInput}
-                    onChangeText={setChatInput}
-                    placeholder="Text Input Here..."
-                    placeholderTextColor="#6b8ba4"
-                  />
-                  <TouchableOpacity 
-                    onPress={handleSendMessage} 
-                    style={styles.sendButton}
-                    disabled={isSending}
-                  >
-                    <MaterialCommunityIcons 
-                      name={isSending ? "dots-horizontal" : "send"} 
-                      size={24} 
-                      color="#5f7f99" 
-                    />
-                  </TouchableOpacity>
-                </View>
-
-                {/* MOVE THE ICON HERE */}
-                <Image 
-                  source={require("../assets/chatbot-cloud.png")} 
-                  style={styles.floatingBotInChat}
+                <TextInput 
+                  style={styles.textInput}
+                  value={chatInput}
+                  onChangeText={setChatInput}
+                  placeholder="Text Input Here..."
+                  placeholderTextColor="#6b8ba4"
                 />
+                <TouchableOpacity 
+                  onPress={handleSendMessage} 
+                  style={styles.sendButton}
+                  disabled={isSending}
+                >
+                  <MaterialCommunityIcons 
+                    name={isSending ? "dots-horizontal" : "send"} 
+                    size={24} 
+                    color="#5f7f99" 
+                  />
+                </TouchableOpacity>
               </View>
+              {/* chat bot*/}
+              <Image 
+                source={require("../assets/chatbot-cloud.png")} 
+                style={styles.floatingBotInChat}
+              />
+            </View>
           </View>
+          
         </View>
       </Modal>
     </ImageBackground>

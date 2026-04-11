@@ -141,8 +141,9 @@ export const styles = StyleSheet.create({
     width: '90%',
     height: '75%',
     backgroundColor: '#e9eef2',
-    borderRadius: 25,
-    overflow: 'hidden'
+    overflow: 'visible',
+    borderRadius: 20,
+
   },
 
   chatHeader: {
@@ -152,6 +153,8 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',       // Align items horizontally
     justifyContent: 'space-between', // Push title and X apart
     alignItems: 'center',       // Center them vertically
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
 
   headerText: {
@@ -199,10 +202,10 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#eee',
     position: 'relative', 
+    zIndex: 1,
   },
 
   textInput: {
@@ -254,19 +257,21 @@ export const styles = StyleSheet.create({
     maxWidth: "80%",
     elevation: 1, // Slight shadow for bot messages
   },
-  // Add or update these specific styles:
+
   inputAreaContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingRight: 60, // Create space for the robot icon on the right
-    position: 'relative',
-  },
-  floatingBotInChat: {
-    width: 80, 
-    height: 80,
-    position: 'absolute',
-    right: -10, // Moves it slightly outside the chat container
-    bottom: -10, // Aligns it with the bottom of the input area
+    paddingRight: 80, 
+    position: 'relative', 
+    overflow: 'visible',
   },
 
+  floatingBotInChat: {
+    width: 125, 
+    height: 165,
+    position: 'absolute',
+    right: -15, 
+    bottom: -25, 
+    zIndex: 10, 
+  },
 });
