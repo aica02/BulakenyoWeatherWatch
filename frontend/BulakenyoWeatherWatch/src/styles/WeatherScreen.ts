@@ -20,13 +20,13 @@ export const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    paddingTop: 60,
+    paddingTop: 20,
     paddingHorizontal: 20,
   },
 
   topSection: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 10,
   },
 
   location: {
@@ -55,7 +55,7 @@ export const styles = StyleSheet.create({
   },
 
   hourlyContainer: {
-    marginVertical: 20,
+    marginVertical: 10,
   },
 
   hourCard: {
@@ -139,7 +139,7 @@ export const styles = StyleSheet.create({
 
   chatContainer: {
     width: '90%',
-    height: '75%',
+    height: '85%',
     backgroundColor: '#e9eef2',
     overflow: 'visible',
     borderRadius: 20,
@@ -150,9 +150,9 @@ export const styles = StyleSheet.create({
     backgroundColor: '#5f7f99',
     paddingHorizontal: 20,
     paddingVertical: 15,
-    flexDirection: 'row',       // Align items horizontally
-    justifyContent: 'space-between', // Push title and X apart
-    alignItems: 'center',       // Center them vertically
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
@@ -165,7 +165,7 @@ export const styles = StyleSheet.create({
 
   chatBody: {
     flex: 1,
-    padding: 15,
+    padding: 10,
     justifyContent: 'space-around'
   },
 
@@ -200,7 +200,7 @@ export const styles = StyleSheet.create({
   inputArea: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingVertical: 10,
     borderTopWidth: 1,
     borderTopColor: '#eee',
@@ -214,8 +214,9 @@ export const styles = StyleSheet.create({
     backgroundColor: '#f0f4f7',
     borderRadius: 25,
     paddingHorizontal: 20,
-    paddingRight: 50, // This creates space so text doesn't go under the button
+    paddingRight: 50,
     color: '#333',
+    elevation: 1,
   },
 
   floatingBot: {
@@ -246,16 +247,17 @@ export const styles = StyleSheet.create({
     backgroundColor: "#5f7f99",
     padding: 12,
     borderRadius: 18,
-    borderTopRightRadius: 2, // Gives it a "speech bubble" look
+    borderBottomRightRadius: 2,
     maxWidth: "80%",
+    elevation: 1,
   },
   botBubble: {
     backgroundColor: "white",
     padding: 12,
     borderRadius: 18,
-    borderTopLeftRadius: 2,
+    borderBottomLeftRadius: 2,
     maxWidth: "80%",
-    elevation: 1, // Slight shadow for bot messages
+    elevation: 1,
   },
 
   inputAreaContainer: {

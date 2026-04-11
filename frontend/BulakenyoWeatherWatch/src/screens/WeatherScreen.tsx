@@ -26,7 +26,7 @@ const WeatherIcons: any = {
   windy: require("../assets/Windy.png"),
 };
 
-const API_KEY = "sa messenger"; 
+const API_KEY = "06fe568d6607489ea2f71845260504"; 
 
 interface HourlyData {
   time: string;
@@ -52,7 +52,7 @@ interface WeatherData {
   daily: DailyData[];
 }
 
-const genAI = new GoogleGenerativeAI("sa messenger");
+const genAI = new GoogleGenerativeAI("AIzaSyCwhJ2dUrZPvk_jt2Wg18Ox7uGz3eoZNC0");
 const model = genAI.getGenerativeModel(
   { model: "gemini-2.5-flash" },
   { apiVersion: "v1" }
@@ -191,6 +191,8 @@ const fetchWeather = async (lat: number, lon: number) => {
     ? require("../assets/morningBG.png")
     : require("../assets/eveningBG.png");
 
+    const textColor = weatherData?.isDay ? "#3498da" : "#ffffff";
+
   if (loading) {
     return (
       <View style={[styles.container, { justifyContent: 'center', backgroundColor: '#121212' }]}>
@@ -294,7 +296,7 @@ const fetchWeather = async (lat: number, lon: number) => {
         <View style={styles.topSection}>
           <View style={styles.location}>
             <Image source={WeatherIcons.location} style={{width: 20, height: 20, marginRight: 5}} />
-            <Text style={styles.locationText}>{errorMsg || locationName}</Text>
+            <Text style={[styles.locationText, { color: textColor }]}>{errorMsg || locationName}</Text>
           </View>
           
           <Image 
@@ -308,14 +310,14 @@ const fetchWeather = async (lat: number, lon: number) => {
 
         {/* 24-Hour Forecast */}
         <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-            <Text style={[styles.dayText, { fontSize: 18, marginBottom: 10 }]}>24-Hour Forecast</Text>
+            <Text style={[styles.dayText, { fontSize: 18, marginBottom: 10, color: textColor }]}>24-Hour Forecast</Text>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hourlyContainer}>
           {weatherData?.hourly.map((item, index) => (
             <View key={index} style={styles.hourCard}>
-              <Text style={styles.hourText}>{item.time}</Text>
+              <Text style={[styles.hourText, { color: textColor }]}>{item.time}</Text>
               <Image source={item.icon} style={{width: 40, height: 40}} />
-              <Text style={styles.tempSmall}>{item.temp}°</Text>
+              <Text style={[styles.tempSmall, { color: textColor }]}>{item.temp}°</Text>
             </View>
           ))}
         </ScrollView>
@@ -323,14 +325,14 @@ const fetchWeather = async (lat: number, lon: number) => {
         {/* 7-Day Forecast */}
         <View style={styles.dailyContainer}>
           <View style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.1)', paddingBottom: 10, marginBottom: 10 }}>
-            <Text style={[styles.dayText, { fontSize: 18 }]}>7-Day Forecast</Text>
+            <Text style={[styles.dayText, { fontSize: 18, color: textColor }]}>7-Day Forecast</Text>
           </View>
           
           {weatherData?.daily.map((day, index) => (
             <View key={index} style={styles.dailyRow}>
-              <Text style={styles.dayText}>{index === 0 ? "Today" : day.dayName}</Text>
+              <Text style={[styles.dayText, { color: textColor }]}>{index === 0 ? "Today" : day.dayName}</Text>
               <Image source={day.icon} style={{width: 35, height: 35}} />
-              <Text style={styles.tempRange}>{day.tempMin}° / {day.tempMax}°</Text>
+              <Text style={[styles.tempRange, { color: textColor }]}>{day.tempMin}° / {day.tempMax}°</Text>
             </View>
           ))}
         </View>
@@ -393,7 +395,7 @@ const fetchWeather = async (lat: number, lon: number) => {
                       key={index} 
                       onLongPress={() => copyToClipboard(cleanText)}
                       delayLongPress={500}
-                      style={msg.role === "user" ? [styles.userRow, { marginVertical: 8 }] : [styles.botRow, { marginVertical: 8 }]}
+                      style={msg.role === "user" ? [styles.userRow] : [styles.botRow]}
                     >
                       {msg.role !== "user" && <Image source={require("../assets/chatbot-cloud.png")} style={styles.botIcon} />}
                       <View style={msg.role === "user" ? styles.userBubble : styles.botBubble}>
@@ -416,24 +418,24 @@ const fetchWeather = async (lat: number, lon: number) => {
             {/* FIXED INPUT AREA */}
               <View style={styles.inputAreaContainer}> 
                 <View style={styles.inputArea}>
-                <TextInput 
-                  style={styles.textInput}
-                  value={chatInput}
-                  onChangeText={setChatInput}
-                  placeholder="Text Input Here..."
-                  placeholderTextColor="#6b8ba4"
-                />
-                <TouchableOpacity 
-                  onPress={handleSendMessage} 
-                  style={styles.sendButton}
-                  disabled={isSending}
-                >
-                  <MaterialCommunityIcons 
-                    name={isSending ? "dots-horizontal" : "send"} 
-                    size={24} 
-                    color="#5f7f99" 
+                  <TextInput 
+                    style={styles.textInput}
+                    value={chatInput}
+                    onChangeText={setChatInput}
+                    placeholder="Text Input Here..."
+                    placeholderTextColor="#6b8ba4"
                   />
-                </TouchableOpacity>
+                  <TouchableOpacity 
+                    onPress={handleSendMessage} 
+                    style={styles.sendButton}
+                    disabled={isSending}
+                  >
+                    <MaterialCommunityIcons 
+                      name={isSending ? "dots-horizontal" : "send"} 
+                      size={24} 
+                      color="#5f7f99" 
+                    />
+                  </TouchableOpacity>
               </View>
               {/* chat bot*/}
               <Image 
