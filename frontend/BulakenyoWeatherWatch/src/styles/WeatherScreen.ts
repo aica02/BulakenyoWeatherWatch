@@ -25,6 +25,8 @@ export const styles = StyleSheet.create({
   },
 
   topSection: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
   },
@@ -43,12 +45,15 @@ export const styles = StyleSheet.create({
   },
 
   temperature: {
+    marginLeft: 20,
+    marginTop: -10,
     fontSize: 80,
     color: "#fff",
     fontFamily: "Montserrat_700Bold",
   },
 
   condition: {
+    marginTop: -15,
     color: "#fff",
     fontSize: 18,
     fontFamily: "Montserrat_400Regular",
@@ -87,7 +92,25 @@ export const styles = StyleSheet.create({
   dailyRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 5,
+    paddingVertical: 10,
+    width: '100%',
+  },
+
+  columnDay: {
+    flex: 1,
+    textAlign: 'left',
+  },
+
+  columnIcon: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  columnTemp: {
+    flex: 1,
+    textAlign: 'right',
+    fontWeight: '600',
   },
 
   dayText: {
@@ -230,7 +253,7 @@ export const styles = StyleSheet.create({
 
   sendButton: {
     position: 'absolute',
-    right: 25, // Adjusted to sit inside the input bar
+    right: 25,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',

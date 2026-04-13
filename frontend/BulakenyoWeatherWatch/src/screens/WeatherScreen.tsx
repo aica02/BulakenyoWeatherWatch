@@ -309,7 +309,7 @@ const fetchWeather = async (lat: number, lon: number) => {
         </View>
 
         {/* 24-Hour Forecast */}
-        <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+        <View style={{ paddingHorizontal: 5, marginTop: 10 }}>
             <Text style={[styles.dayText, { fontSize: 18, marginBottom: 10, color: textColor }]}>24-Hour Forecast</Text>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hourlyContainer}>
@@ -330,9 +330,11 @@ const fetchWeather = async (lat: number, lon: number) => {
           
           {weatherData?.daily.map((day, index) => (
             <View key={index} style={styles.dailyRow}>
-              <Text style={[styles.dayText, { color: textColor }]}>{index === 0 ? "Today" : day.dayName}</Text>
-              <Image source={day.icon} style={{width: 35, height: 35}} />
-              <Text style={[styles.tempRange, { color: textColor }]}>{day.tempMin}° / {day.tempMax}°</Text>
+              <Text style={[styles.dayText, styles.columnDay, { color: textColor }]}>{index === 0 ? "Today" : day.dayName}</Text>
+              <View style={styles.columnIcon}>
+                <Image source={day.icon} style={{ width: 35, height: 35 }} />
+              </View>
+              <Text style={[styles.tempRange, styles.columnTemp, { color: textColor }]}>{day.tempMin}° / {day.tempMax}°</Text>
             </View>
           ))}
         </View>
